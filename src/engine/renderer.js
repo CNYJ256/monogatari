@@ -28,9 +28,9 @@ export { createInternalState } from './internalState.js';
  * @param {object} internalState - Resource pool from createInternalState()
  * @param {object|null} cache - Offscreen cache from createCacheCanvas() (auto-created if null)
  */
-export function render(config, canvas, dirtyFlags, internalState, cache) {
+export function render(config, canvas, dirtyFlags, internalState, cache, dprOverride) {
   // --- DPR-aware canvas setup ---
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = dprOverride ?? (window.devicePixelRatio || 1);
   const cssWidth = canvas.clientWidth || canvas.width / dpr;
   const cssHeight = canvas.clientHeight || canvas.height / dpr;
   canvas.width = cssWidth * dpr;

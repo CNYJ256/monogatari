@@ -25,7 +25,7 @@ export function exportPNG(config) {
   const internalState = createInternalState();
   const dirtyFlags = { backgroundOrTexture: true };
 
-  render(config, canvas, dirtyFlags, internalState, null);
+  render(config, canvas, dirtyFlags, internalState, null, 1);
 
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {

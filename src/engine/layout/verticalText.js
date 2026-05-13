@@ -166,10 +166,11 @@ function buildItems(graphemes, fontSizePx) {
  * @param {number} margin
  * @returns {{ characters: object[], totalColumns: number }}
  */
-function greedyPlace(items, startX, startY, charHeight, columnWidth, canvasHeight, margin) {
+function greedyPlace(items, startX, startY, charHeight, columnWidth, canvasHeight, margin, stagger) {
   let currentX = startX;
   let currentY = startY;
   let currentColumn = 0;
+  let inColumn = 0;
   const characters = [];
 
   for (const item of items) {
@@ -180,11 +181,14 @@ function greedyPlace(items, startX, startY, charHeight, columnWidth, canvasHeigh
       currentX -= columnWidth;
       currentY = startY;
       currentColumn++;
+      inColumn = 0;
     }
 
-    characters.push(itemToCharacter(item, currentX, currentY, currentColumn));
+    const staggerOffset = (stagger && (inColumn % 2 === 1)) ? stagger * charHeight : 0;
+    characters.push(itemToCharacter(item, currentX + staggerOffset, currentY, currentColumn, inColumn));
 
     currentY += stepHeight;
+    inColumn++;
   }
 
   return { characters, totalColumns: currentColumn + 1 };
@@ -193,7 +197,7 @@ function greedyPlace(items, startX, startY, charHeight, columnWidth, canvasHeigh
 /**
  * Convert an item to a character layout entry.
  */
-function itemToCharacter(item, x, y, column) {
+function itemToCharacter(item, x, y, column, inColumn) {
   return {
     grapheme: item.grapheme,
     x: Math.round(x),
@@ -204,6 +208,7 @@ function itemToCharacter(item, x, y, column) {
     isTateChuYoko: item.type === 'tcy',
     tcyChars: item.type === 'tcy' ? item.tcyChars : undefined,
     column,
+    inColumn: inColumn ?? 0,
   };
 }
 
@@ -219,7 +224,7 @@ function itemToCharacter(item, x, y, column) {
  * @param {number} charHeight
  * @param {number} columnWidth
  */
-function recalcPositions(characters, startX, startY, charHeight, columnWidth) {
+function recalcPositions(characters, startX, startY, charHeight, columnWidth, stagger) {
   // Group by column
   const byCol = new Map();
   for (const ch of characters) {
@@ -233,12 +238,16 @@ function recalcPositions(characters, startX, startY, charHeight, columnWidth) {
   for (const colNum of colNums) {
     const colChars = byCol.get(colNum);
     let y = startY;
-    const x = startX - colNum * columnWidth;
+    const baseX = startX - colNum * columnWidth;
+    let inCol = 0;
 
     for (const ch of colChars) {
-      ch.x = Math.round(x);
+      ch.inColumn = inCol;
+      const staggerOffset = (stagger && (inCol % 2 === 1)) ? stagger * charHeight : 0;
+      ch.x = Math.round(baseX + staggerOffset);
       ch.y = Math.round(y);
       y += charHeight;
+      inCol++;
     }
   }
 }
@@ -261,7 +270,7 @@ function recalcPositions(characters, startX, startY, charHeight, columnWidth) {
  * @param {number} columnWidth
  * @returns {number} Total columns after kinsoku
  */
-function applyKinsoku(characters, startX, startY, charHeight, columnWidth) {
+function applyKinsoku(characters, startX, startY, charHeight, columnWidth, stagger) {
   const maxPasses = 2;
   let passes = 0;
   let changed = true;
@@ -322,7 +331,7 @@ function applyKinsoku(characters, startX, startY, charHeight, columnWidth) {
   }
 
   // Recalculate positions after all column reassignments
-  recalcPositions(characters, startX, startY, charHeight, columnWidth);
+  recalcPositions(characters, startX, startY, charHeight, columnWidth, stagger);
 
   // Compute new total columns
   const maxCol = characters.reduce((max, ch) => Math.max(max, ch.column), 0);
@@ -373,6 +382,7 @@ export function computeVerticalLayout(
 
   const startX = pixelPos.x;
   const startY = pixelPos.y;
+  const stagger = slot.stagger || 0;
 
   // --- Step 2: Grapheme splitting ---
   const graphemes = splitGraphemes(text);
@@ -389,6 +399,7 @@ export function computeVerticalLayout(
     columnWidth,
     canvasHeight,
     margin,
+    stagger,
   );
 
   // --- Step 6: Horizontal overflow detection ---
@@ -417,6 +428,7 @@ export function computeVerticalLayout(
     startY,
     charHeight,
     columnWidth,
+    stagger,
   );
 
   // Re-apply horizontal overflow after kinsoku (column reassignment may push

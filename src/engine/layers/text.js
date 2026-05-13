@@ -84,7 +84,7 @@ export function drawHorizontalText(ctx, slot, baseWidth, baseHeight, canvasWidth
 
   // Shadow
   if (slot.textShadow && slot.textShadow.blur > 0) {
-    ctx.shadowBlur = ratioToPixel(slot.textShadow.blur, baseHeight, scale);
+    ctx.shadowBlur = slot.textShadow.blur * scale;
     ctx.shadowColor = slot.textShadow.color;
   }
 
@@ -100,7 +100,7 @@ export function drawHorizontalText(ctx, slot, baseWidth, baseHeight, canvasWidth
     ctx.fillText(slot.content, x, y);
     if (hasBorder) {
       ctx.strokeStyle = slot.border.color;
-      ctx.lineWidth = ratioToPixel(slot.border.width, baseHeight, scale);
+      ctx.lineWidth = slot.border.width * scale;
       ctx.strokeText(slot.content, x, y);
     }
   } else {
@@ -119,7 +119,7 @@ export function drawHorizontalText(ctx, slot, baseWidth, baseHeight, canvasWidth
 
     if (hasBorder) {
       ctx.strokeStyle = slot.border.color;
-      ctx.lineWidth = ratioToPixel(slot.border.width, baseHeight, scale);
+      ctx.lineWidth = slot.border.width * scale;
     }
 
     let cursorX = startX;
@@ -170,14 +170,14 @@ export function drawVerticalText(ctx, slot, baseWidth, baseHeight, canvasWidth, 
 
   // Shadow
   if (slot.textShadow && slot.textShadow.blur > 0) {
-    ctx.shadowBlur = ratioToPixel(slot.textShadow.blur, baseHeight, scale);
+    ctx.shadowBlur = slot.textShadow.blur * scale;
     ctx.shadowColor = slot.textShadow.color;
   }
 
   // Border (stroke)
   if (hasBorder) {
     ctx.strokeStyle = slot.border.color;
-    ctx.lineWidth = ratioToPixel(slot.border.width, baseHeight, scale);
+    ctx.lineWidth = slot.border.width * scale;
   }
 
   for (const ch of characters) {

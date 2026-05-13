@@ -60,7 +60,7 @@ export default function TextSlotEditor() {
     if (slot.textShadow && typeof slot.textShadow === 'object') {
       updateSlot(slotId, 'textShadow', undefined);
     } else {
-      updateSlot(slotId, 'textShadow', { blur: 0, color: '#ffffff' });
+      updateSlot(slotId, 'textShadow', { blur: 8, color: '#ffffff' });
     }
     debouncedSave();
   }
