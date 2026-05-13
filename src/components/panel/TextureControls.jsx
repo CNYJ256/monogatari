@@ -55,7 +55,7 @@ export default function TextureControls() {
           label={t('texture.scanlineDensity')}
           value={scanline.density}
           min={1}
-          max={8}
+          max={20}
           step={1}
           onChange={(v) => handleScanlineConfig('texture.scanline.density', v)}
           disabled={!scanline.enabled}

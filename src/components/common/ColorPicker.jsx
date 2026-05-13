@@ -3,7 +3,7 @@ import { t } from '../../i18n/index.js';
 import { useFrameStore } from '../../state/frameStore.js';
 
 const DEFAULT_PRESETS = [
-  '#e60000',
+  '#C52912',
   '#1a1a2e',
   '#d9e4f0',
   '#000000',

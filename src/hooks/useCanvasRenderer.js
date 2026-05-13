@@ -5,24 +5,6 @@ import { createCacheCanvas } from '../engine/cache.js';
 import { useFrameStore } from '../state/frameStore.js';
 
 /**
- * Shallow comparison — returns true if a and b have the same top-level keys
- * with Object.is-equality on each value.
- */
-function shallow(a, b) {
-  if (Object.is(a, b)) return true;
-  if (typeof a !== 'object' || a === null || typeof b !== 'object' || b === null) {
-    return false;
-  }
-  const keysA = Object.keys(a);
-  const keysB = Object.keys(b);
-  if (keysA.length !== keysB.length) return false;
-  for (const key of keysA) {
-    if (!Object.is(a[key], b[key])) return false;
-  }
-  return true;
-}
-
-/**
  * Subscribe to the Zustand store and drive the canvas render pipeline.
  *
  * Batches rapid store updates via requestAnimationFrame so multiple
@@ -89,14 +71,17 @@ export default function useCanvasRenderer(canvasRef) {
     });
     resizeObserver.observe(canvas);
 
-    // Subscribe to config and dirtyFlags changes
-    const unsub = useFrameStore.subscribe(
-      (state) => ({ config: state.config, dirtyFlags: state.dirtyFlags }),
-      () => {
+    // Subscribe to all store changes; schedule a render when config or dirtyFlags reference changes
+    let prevConfig = useFrameStore.getState().config;
+    let prevDirtyFlags = useFrameStore.getState().dirtyFlags;
+
+    const unsub = useFrameStore.subscribe((state) => {
+      if (state.config !== prevConfig || state.dirtyFlags !== prevDirtyFlags) {
+        prevConfig = state.config;
+        prevDirtyFlags = state.dirtyFlags;
         scheduleRender();
-      },
-      { equalityFn: shallow },
-    );
+      }
+    });
 
     // Initial render
     scheduleRender();

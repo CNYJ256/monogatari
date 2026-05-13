@@ -20,7 +20,7 @@ export default function useFontStatus() {
     }
 
     // Initiate font loading — fire-and-forget, no cleanup needed
-    loadFont('/fonts/MS-PMincho-2.ttf').then((ok) => {
+    loadFont(`${import.meta.env.BASE_URL}fonts/MS-PMincho-2.ttf`).then((ok) => {
       if (!ok) return;
 
       document.fonts.ready.then(() => {

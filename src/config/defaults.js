@@ -1,10 +1,10 @@
 export const DEFAULT_FRAME_CONFIG = {
   baseWidth: 3840,
   aspectRatio: [12, 5],
-  assets: { fontsLoaded: false },
-  backgroundColor: '#e60000',
+  assets: { fontsLoaded: false, canvasSupported: true },
+  backgroundColor: '#C52912',
   texture: {
-    scanline: { enabled: true, density: 2, opacity: 0.18, color: '#000' },
+    scanline: { enabled: true, density: 8, opacity: 0.05, color: '#000' },
     grain: { enabled: true, intensity: 0.15, type: 'luminance' },
   },
   textSlots: [],
@@ -21,7 +21,7 @@ export const DEFAULT_FRAME_CONFIG = {
 };
 
 export const PRESET_COLORS = [
-  { name: '物语红', value: '#e60000' },
+  { name: '物语红', value: '#C52912' },
   { name: '黑', value: '#000000' },
   { name: '白', value: '#ffffff' },
   { name: '紫', value: '#5b2c8e' },
@@ -32,8 +32,8 @@ export const PRESET_COLORS = [
 ];
 
 export const SCANLINE_PRESETS = {
-  density: { min: 1, max: 6, step: 0.5, default: 2 },
-  opacity: { min: 0.05, max: 0.4, step: 0.01, default: 0.18 },
+  density: { min: 1, max: 20, step: 1, default: 8 },
+  opacity: { min: 0.01, max: 0.4, step: 0.01, default: 0.05 },
 };
 
 export const GRAIN_PRESETS = {

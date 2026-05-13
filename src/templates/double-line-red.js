@@ -7,9 +7,9 @@ export default {
   category: 'double',
   lockedFields: ['backgroundColor'],
   baseConfig: {
-    backgroundColor: '#e60000',
+    backgroundColor: '#C52912',
     texture: {
-      scanline: { enabled: true, density: 2, opacity: 0.15, color: '#000000' },
+      scanline: { enabled: true, density: 8, opacity: 0.05, color: '#000000' },
       grain: { enabled: true, intensity: 0.10, type: 'luminance' },
     },
     textSlots: [

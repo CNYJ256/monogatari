@@ -9,7 +9,7 @@ export default {
   baseConfig: {
     backgroundColor: '#000000',
     texture: {
-      scanline: { enabled: true, density: 3, opacity: 0.08, color: '#ffffff' },
+      scanline: { enabled: true, density: 8, opacity: 0.05, color: '#ffffff' },
       grain: { enabled: false, intensity: 0, type: 'luminance' },
     },
     textSlots: [

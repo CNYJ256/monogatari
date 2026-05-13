@@ -231,11 +231,12 @@ export const useFrameStore = create((set, get) => ({
       overrides = persisted.overrides;
     }
 
-    // Deep-merge template baseConfig with user overrides
+    // Deep-merge defaults → template baseConfig → user overrides
     let mergedConfig = deepMerge(
+      structuredClone(DEFAULT_FRAME_CONFIG),
       structuredClone(template.baseConfig),
-      structuredClone(overrides || {}),
     );
+    mergedConfig = deepMerge(mergedConfig, structuredClone(overrides || {}));
 
     // Convert template TextSlots → canonical TextSlots
     mergedConfig.textSlots = convertTemplateSlots(
@@ -250,6 +251,9 @@ export const useFrameStore = create((set, get) => ({
       template.baseConfig,
       template.lockedFields,
     );
+
+    // Preserve runtime assets (font load state, canvas support) across template switches
+    mergedConfig.assets = get().config.assets;
 
     set({
       config: mergedConfig,

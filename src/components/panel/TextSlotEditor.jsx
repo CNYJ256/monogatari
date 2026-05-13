@@ -132,6 +132,7 @@ export default function TextSlotEditor() {
                 checked={slot.enabled}
                 onChange={(v) => handleSlotUpdate(slot.id, 'enabled', v)}
                 disabled={false}
+                roleOnly
               />
               <span className={`tse-accordion__chevron${isExpanded ? ' tse-accordion__chevron--open' : ''}`}>
                 &#9660;

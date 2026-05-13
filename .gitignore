@@ -26,6 +26,9 @@ dist-ssr
 # Claude Code local settings
 .claude/
 
+# Playwright browser automation artifacts
+.playwright-mcp/
+
 # Font files at root (should be in public/fonts/)
 *.ttf
 !public/fonts/*.ttf

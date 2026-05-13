@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import useWindowResize from '../../hooks/useWindowResize.js';
 import useFontStatus from '../../hooks/useFontStatus.js';
 import useCanvasRenderer from '../../hooks/useCanvasRenderer.js';
+import useCapabilities from '../../hooks/useCapabilities.js';
 import { useFrameStore } from '../../state/frameStore.js';
 import { t } from '../../i18n/index.js';
 import { positionToPixel, ratioToPixel, pixelToRatio, getGlobalScale } from '../../utils/coordinates.js';
@@ -139,6 +140,10 @@ export default function PreviewCanvas() {
   // Loads font and sets config.assets.fontsLoaded in the store (side-effect)
   useFontStatus();
   const fontsLoadedStore = useFrameStore((s) => s.config.assets.fontsLoaded);
+
+  // Detect canvas 2D support (side-effect — sets assets.canvasSupported)
+  useCapabilities();
+  const canvasSupported = useFrameStore((s) => s.config.assets.canvasSupported);
 
   // Drive the render pipeline
   useCanvasRenderer(canvasRef);
@@ -285,7 +290,11 @@ export default function PreviewCanvas() {
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
       />
-      {!fontsLoadedStore && (
+      {!canvasSupported ? (
+        <div className="canvas-overlay">
+          <span className="canvas-loading-text">{t('status.canvasNotSupported')}</span>
+        </div>
+      ) : !fontsLoadedStore && (
         <div className="canvas-overlay">
           <span className="canvas-loading-text">{t('status.fontLoading')}</span>
         </div>

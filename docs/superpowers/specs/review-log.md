@@ -230,3 +230,82 @@
 - `npm run lint`: PASS (0 errors, 0 warnings)
 
 ### 就绪进入 Phase 5
+
+---
+
+## Phase 5: 集成 + 打磨 — 2026-05-13
+
+### 审查结果: ✅ 通过（2 个 bug 已修复）
+
+### 涉及文件
+
+**新增文件 (4)**:
+- `src/engine/export.js` — 高分辨率 PNG 导出（3840×1600 离屏渲染）
+- `src/hooks/useCapabilities.js` — Canvas 2D 支持检测
+- `README.md` — 项目说明文档
+- `.playwright-mcp/` added to `.gitignore`
+
+**修改文件 (8)**:
+- `src/components/layout/Header.jsx` — 导出逻辑改为调用 exportPNG()
+- `src/components/preview/PreviewCanvas.jsx` — 集成 useCapabilities，Canvas 不支持降级 UI
+- `src/config/defaults.js` — assets 新增 `canvasSupported: true`
+- `src/state/frameStore.js` — loadTemplate 修复 assets 丢失 bug
+- `src/components/common/ToggleSwitch.jsx` — 新增 `roleOnly` prop 支持非 button 模式
+- `src/components/panel/TextSlotEditor.jsx` — ToggleSwitch 传入 roleOnly 修复 HTML 嵌套
+- `.gitignore` — 新增 `.playwright-mcp/`
+
+### 初始审查发现 (Boss Agent)
+
+| # | 严重度 | 问题 | 修复 |
+|---|--------|------|------|
+| C1 | CRITICAL | loadTemplate 以 template.baseConfig 为 deepMerge base → 丢失 `assets` 字段 → `config.assets.fontsLoaded` TypeError | 修复为 DEFAULT_FRAME_CONFIG → template.baseConfig → overrides 三层合并 |
+| W1 | WARNING | ToggleSwitch `<button>` 嵌套在 Accordion header `<button>` 内 → HTML 非法 | ToggleSwitch 新增 `roleOnly` prop，渲染 `<div role="switch">` + 键盘交互 |
+
+### 规格书一致性检查
+
+| 要求 | 状态 |
+|------|------|
+| §7 离屏 canvas 3840×1600 全量渲染 | PASS |
+| §7 `toBlob('image/png')` → download | PASS |
+| §7 文件命名 `monogatari-{timestamp}.png` | PASS |
+| §7 Header loading 状态 + 错误处理 | PASS |
+| §11 Canvas 不支持降级提示 | PASS |
+| §11 字体加载中提示（已有） | PASS |
+| §11 localStorage 静默降级（已有） | PASS |
+| §11 Intl.Segmenter 回退（已有） | PASS |
+| README 含功能列表 + 快速开始 + 技术栈 + 项目结构 | PASS |
+| `vite build` base path `/monogatari/` | PASS |
+| 桌面端两栏布局 (1440px) | PASS |
+| 移动端布局 (375px) 底部面板 | PASS |
+| 语言切换 (简→日→EN) | PASS |
+| 模板加载 + Canvas 渲染 | PASS |
+| ToggleSwitch 无障碍（role="switch", aria-checked, 键盘） | PASS |
+| `.gitignore` 覆盖 Playwright artifacts | PASS |
+
+### 构建状态
+- `npm run build`: PASS (59 modules, 237KB JS, 16KB CSS)
+- `npm run lint`: PASS (0 errors, 0 warnings)
+
+### 本地测试发现 (Boss Agent) — 2026-05-13
+
+| # | 严重度 | 问题 | 修复 |
+|---|--------|------|------|
+| C3 | **CRITICAL** | `useCanvasRenderer` 使用 Zustand v4 API `subscribe(selector, listener, { equalityFn })`，但 Zustand v5.0.13 的 `subscribe` 仅接受 `(listener)` 单参数。selector 被误当作 listener（只返回对象不调度 render），真正的 `scheduleRender` 回调被忽略。导致 Canvas **从不响应 store 变更**（模板切换、颜色、纹理等全部无效）| 改为 `subscribe((state) => { if (state.config !== prevConfig \|\| state.dirtyFlags !== prevDirtyFlags) { scheduleRender(); } })` 用引用比较替代 shallow 相等，移除无用的 `shallow` 函数 |
+
+### 测试结果汇总
+
+| 测试模块 | 项目数 | 结果 |
+|----------|--------|------|
+| 模板系统 | 4 | ✅ 全部通过 |
+| 文字编辑 | 8 | ✅ UI 交互正常（字体渲染需真实浏览器验证） |
+| 背景与纹理 | 7 | ✅ 全部通过 |
+| 番号栏 | 5 | ✅ UI 交互正常 |
+| 导出 PNG | 4 | ✅ 3840×1600 分辨率正确 |
+| i18n | 4 | ✅ 三语切换正常 |
+| 响应式布局 | 4 | ✅ 桌面/移动端布局正常 |
+| 持久化 | 3 | ✅ 跨模板隔离正确 |
+| 错误处理 | 3 | ✅ 空文字位不崩溃 |
+
+### 项目完成 🎉
+
+全部 5 个 Phase 完成 + 1 个 CRITICAL bug 修复，Monogatari Frame Generator MVP 就绪。

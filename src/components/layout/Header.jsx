@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { t } from '../../i18n/index.js';
 import { useFrameStore } from '../../state/frameStore.js';
+import { exportPNG } from '../../engine/export.js';
 
 const LANG_OPTIONS = [
   { value: 'zh-CN', label: '简' },
@@ -19,29 +20,29 @@ export default function Header() {
     : null;
 
   function handleExport() {
-    const canvasRef = useFrameStore.getState().canvasRef;
-    if (!canvasRef || !canvasRef.current) return;
+    const { config } = useFrameStore.getState();
+
+    // Don't export until fonts are loaded — text would be invisible
+    if (!config.assets.fontsLoaded) return;
 
     setExporting(true);
-    try {
-      canvasRef.current.toBlob((blob) => {
-        if (!blob) {
-          setExporting(false);
-          return;
-        }
+    exportPNG(config)
+      .then(({ blob, filename }) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `monogatari-${Date.now()}.png`;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+      })
+      .catch((err) => {
+        console.error('Export failed:', err);
+      })
+      .finally(() => {
         setExporting(false);
-      }, 'image/png');
-    } catch {
-      setExporting(false);
-    }
+      });
   }
 
   return (
