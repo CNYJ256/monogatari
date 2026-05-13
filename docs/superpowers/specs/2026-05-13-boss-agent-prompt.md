@@ -121,6 +121,7 @@ Phase 5: 集成 + 打磨  ░░░░░░░░░░░░░░░░  ⬜ 
 | 5.3 `vite build` + GitHub Pages 路径验证 | `implementation-agent` | `/monogatari/` base path |
 | 5.4 最终走查 + 移动端验证 | `implementation-agent` | 完整 checklist |
 | 5.5 最终 README | `Technical Writer` | 项目说明 + 使用指南 |
+｜5.6｜自由裁定｜编写.gitignore 清理工作区文件｜
 
 ---
 

@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code local settings
+.claude/
+
+# Font files at root (should be in public/fonts/)
+*.ttf
+!public/fonts/*.ttf
