@@ -14,13 +14,13 @@
 
 ```
 Phase 1: 基础设施    ████████████████  ✅ 完成 (已审查通过)
-Phase 2: 渲染引擎    ████████████████  ⚠️ 代码完成，审查发现 9 个待修复问题
-Phase 3: 模板 + 状态  ░░░░░░░░░░░░░░░░  ⬜ 待开始
-Phase 4: UI 组件     ░░░░░░░░░░░░░░░░  ⬜ 待开始
+Phase 2: 渲染引擎    ████████████████  ✅ 完成 (9 问题已修复)
+Phase 3: 模板 + 状态  ████████████████  ✅ 完成 (4 问题已修复)
+Phase 4: UI 组件     ████████████████  ✅ 完成 (11 问题已修复)
 Phase 5: 集成 + 打磨  ░░░░░░░░░░░░░░░░  ⬜ 待开始
 ```
 
-**下次启动动作**: 修复 Phase 2 审查问题 → 验证 lint/build → 进入 Phase 3
+**下次启动动作**: 进入 Phase 5 → 高分辨率导出 + 错误处理 + build 验证 + README
 
 ---
 
@@ -88,47 +88,39 @@ Phase 5: 集成 + 打磨  ░░░░░░░░░░░░░░░░  ⬜ 
 | 1.6–1.8 字体 + assetsManager + defaults | ✅ |
 | 门禁审查 + 4 问题修复 | ✅ |
 
-### Phase 2: 渲染引擎 ⚠️
+### Phase 2: 渲染引擎 ✅
 | 子阶段 | 状态 |
 |--------|------|
 | 2A 背景层 + 扫描线 + 噪点 + 缓存 | ✅ |
 | 2B 横排文字渲染 | ✅ |
 | 2C 竖排布局引擎 + 标点 + 避头尾 + 绘制集成 | ✅ |
 | 2D 渲染管线 + 缓存集成 + 番号栏 | ✅ |
-| **门禁审查** | ⚠️ 发现 2C + 7W + 3 ESLint，待修复 |
+| **门禁审查 + 9 问题修复** | ✅ |
 
-**待修复清单**（详见 review-log.md）:
-- C1: assetsManager.js SAFE_PATH_RE 允许 `../` 路径遍历
-- C2: renderer.js canvas 0×0 静默不渲染
-- W1: text.js 注释/代码不一致 (0.25 vs 0.5)
-- W2: drawVerticalText 逐字重复设置 font
-- W3: verticalText.js buildItems Step 3 死代码
-- W4: recalcPositions 多余参数 (ESLint)
-- W5: lineHeight=0 无 guard
-- W6: frameStore + defaults config 重复
-- W7: setConfig 无条件 dirty
-- E1: verticalText.js useless assignment
+### Phase 3: 模板 + i18n + 持久化 ✅
+| 任务 | 分配 Agent | 状态 |
+|------|-----------|------|
+| 3.1 5 个模板文件 + 注册表 | `implementation-agent` | ✅ |
+| 3.2–3.3 i18n 三语 (68 keys) + t()/setLang() | `implementation-agent` | ✅ (并行) |
+| 3.4–3.5 store 模板 actions + localStorage | `implementation-agent` | ✅ |
+| **门禁审查 + 4 问题修复** | `code-reviewer` → `implementation-agent` | ✅ |
 
-### Phase 3: 模板 + i18n + 持久化
-| 任务 | 分配 Agent | 验收标准 |
-|------|-----------|----------|
-| 3.1 5 个模板文件 | `implementation-agent` | 每个模板符合 `Template` 接口 |
-| 3.2–3.3 i18n 三语 | `implementation-agent` | `t('export.button')` 三语切换正确 |
-| 3.4–3.5 store + localStorage | `implementation-agent` | 存/取/版本迁移/错误降级正常 |
-
-### Phase 4: UI 组件
-| 子阶段 | 分配 Agent | 备注 |
+### Phase 4: UI 组件 ✅
+| 子阶段 | 分配 Agent | 状态 |
 |--------|-----------|------|
-| 4A 布局骨架 + Header + PreviewCanvas + resize hook | `implementation-agent` | 布局困难调 `UX Architect` |
-| 4B 全部控制面板组件 | `implementation-agent` | 样式指导调 `UI Designer` |
-| 4C Hook + Canvas 点击拖拽交互 | `implementation-agent` | 交互 bug 调 `debugger` |
+| 4A 布局骨架 + Header + PreviewCanvas + resize hook | `implementation-agent` | ✅ |
+| 4B 全部控制面板组件 (8 个) | `implementation-agent` | ✅ |
+| 4C useCanvasRenderer + useFontStatus + 点击拖拽 | `implementation-agent` | ✅ |
+| **门禁审查 + 11 问题修复** | `code-reviewer` → `implementation-agent` | ✅ |
 
 ### Phase 5: 导出 + 打磨
-| 任务 | 分配 Agent |
-|------|-----------|
-| 5.1–5.2 导出 + 按钮接入 | `implementation-agent` |
-| 5.3–5.4 错误处理 + build | `implementation-agent` |
-| 5.5 最终 README | `Technical Writer` |
+| 任务 | 分配 Agent | 备注 |
+|------|-----------|------|
+| 5.1 创建 `src/engine/export.js` | `implementation-agent` | 离屏 canvas 3840×1600 全量渲染 → toBlob → download |
+| 5.2 错误处理集成 | `implementation-agent` | 字体加载提示 / Canvas 不支持降级 / localStorage 降级 |
+| 5.3 `vite build` + GitHub Pages 路径验证 | `implementation-agent` | `/monogatari/` base path |
+| 5.4 最终走查 + 移动端验证 | `implementation-agent` | 完整 checklist |
+| 5.5 最终 README | `Technical Writer` | 项目说明 + 使用指南 |
 
 ---
 
@@ -171,19 +163,33 @@ Phase 5: 集成 + 打磨  ░░░░░░░░░░░░░░░░  ⬜ 
 
 ---
 
-## 六、经验教训（Phase 1-2 总结）
+## 六、经验教训（Phase 1-4 总结）
 
 ### 调度策略
 - **合并关联任务**: 同一文件的多个任务合并为一次派发，减少 agent 间上下文丢失
-- **并行独立任务**: 不共享文件的任务可并行派发（如 1.4+1.5 与 1.6+1.7+1.8 并行）
+- **并行独立任务**: 不共享文件的任务可并行派发（如 3.1 与 3.2-3.3 并行；Phase 3 模板和 i18n 同时推进）
 - **每 Phase 结束必须审查**: 不能跳过 lint + build + code-review 门禁
+- **大批量派发要提供精确规格**: Phase 4B 一次派发 8 个组件，成功的关键是每个组件都给了详细的 props 接口、store 交互、和 CSS 类名前缀
+- **修复任务按文件分组**: 审查后的修复应合并为一次派发（如 Phase 4 的 11 个修复一次完成），agent 能看到全局并避免冲突
 
 ### 常见问题模式
+
+#### Phase 1-2 发现
 - **路径验证**: 正则白名单容易遗漏 `..` 遍历，需多重检查
 - **Canvas 边界**: 零尺寸 canvas、DPR 计算、缓存尺寸匹配是易出 bug 区域
 - **跨文件一致性**: 同名常量（如 default config）容易在两处定义而漂移——应从单一来源导入
 - **竖排引擎**: 最复杂模块，死代码和多余参数容易残留，lint 能有效捕获
 - **性能陷阱**: 循环内重复设置 canvas context 属性（font/fillStyle/shadow）是常见浪费
+
+#### Phase 3-4 新发现
+- **双源状态同步**: i18n 模块和 Zustand store 各维护一份 `lang` 状态——必须确保 store.setLang 同步调用 i18n.setLang，且 store 初始化从 i18n.getLang 读取
+- **持久化覆盖不完整**: 审查发现 BackgroundPicker 和 TextureControls 只调 setConfig 不调 saveConfig，用户数据在刷新后丢失。每个 setConfig 调用点都需配对 saveConfig（或 debounced save）
+- **i18n 响应式陷阱**: 组件调用 `t()` 但不订阅 store 的 `lang` 字段 → 语言切换后 t() 返回旧语言文本。有效模式：`const lang = useFrameStore(s => s.lang)` 即使不使用 lang 变量，也能触发 re-render
+- **Canvas 交互性能**: hitVerticalSlot 每次 pointermove 调用完整的 `computeVerticalLayout`（字素分割 + 逐字定位 + 避头尾）——极昂贵。必须添加缓存（key = slot.id + content + position + fontSize），仅参数变化时重新计算
+- **脏标记生命周期**: `dirtyFlags.backgroundOrTexture` 被 setConfig 设为 true，但从未被重置为 false → 缓存每一帧都被重建。render 完成后必须 `setDirty('backgroundOrTexture', false)`
+- **坐标系统一致性**: footerBlock.fontSize 默认值 60（像素）与 textSlot fontSize 的 ratio 约定不一致 → UI 滑条范围与默认值冲突。统一使用 ratio（< 1 为 ratio，由 coordinates.js 换算为像素）
+- **重复组件抽取**: ToggleSwitch 在 TextureControls 和 TextSlotEditor 中重复定义。发现重复时立即提取为 common 组件
+- **双重 DPR 设置**: PreviewCanvas 和 renderer 各自设置 canvas.width/height，容易漂移。让 renderer 统一管理 backing store，PreviewCanvas 仅设 CSS 尺寸
 
 ### 升级规则
 | 情况 | 行动 |
@@ -192,6 +198,8 @@ Phase 5: 集成 + 打磨  ░░░░░░░░░░░░░░░░  ⬜ 
 | 发现规格书与实现冲突 | 暂停任务，调 `Software Architect` 裁决 |
 | 遇到未在计划中的必要工作 | 评估影响 → 更新实施计划 → 新增任务 |
 | 竖排引擎连续阻塞超过 3 轮 | 调 `Software Architect` + `debugger` 会诊 |
+| 审查发现 CRITICAL > 3 个 | 全部修复后再次审查（不跳过第二轮 review） |
+| 组件跨文件共享状态逻辑 | 评估是否需要抽取为 common 组件或 hook |
 
 ---
 
@@ -199,10 +207,15 @@ Phase 5: 集成 + 打磨  ░░░░░░░░░░░░░░░░  ⬜ 
 
 下次启动时：
 
-1. **读取** `docs/superpowers/specs/review-log.md` 确认上次断点
-2. **修复** Phase 2 审查发现的 9 个问题（派给 `implementation-agent`）
-3. **验证** `npm run lint && npm run build` 通过
-4. **进入** Phase 3 模板 + i18n + 持久化
-5. 按 §三 调度计划逐任务推进
+1. **读取** `docs/superpowers/specs/review-log.md` 确认上次断点（Phase 5 待开始）
+2. **Phase 5 任务**:
+   - 5.1 创建 `src/engine/export.js` — 离屏高分辨率导出（3840×1600）
+   - 5.2 错误处理集成 — 字体/Cavnas/localStorage 错误降级 UI
+   - 5.3 `vite build` + GitHub Pages `/monogatari/` base path 验证
+   - 5.4 最终走查 — 桌面/移动端交互、导出质量、深色主题一致性
+   - 5.5 调 `Technical Writer` 写 README
+3. 每完成一个子任务运行 `npm run lint && npm run build`
+4. Phase 5 全部完成后调 `code-reviewer` 做最终审查
+5. 更新审查日志，标记项目完成
 
 **记住：你是 Boss，你不写代码。你只调度、审查、决策。**
