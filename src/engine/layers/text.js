@@ -22,7 +22,7 @@ function formatFont(fontWeight, fontSizePx, fontFamily) {
  * Measure the width of a single character using the current font.
  *
  * Some glyphs (e.g. CJK punctuation) may have zero or full-width advance.
- * We clamp the minimum to fontSizePx * 0.25 so narrow characters don't collapse.
+ * We clamp the minimum to fontSizePx * 0.5 so narrow characters don't collapse.
  *
  * @param {CanvasRenderingContext2D} ctx
  * @param {string} char
@@ -164,6 +164,22 @@ export function drawVerticalText(ctx, slot, baseWidth, baseHeight, canvasWidth, 
   const scale = getGlobalScale(canvasWidth, baseWidth);
   const hasBorder = slot.border && slot.border.width > 0;
 
+  // Set common text properties once (same for all characters)
+  ctx.font = formatFont(slot.fontWeight, fontSizePx, slot.fontFamily);
+  ctx.fillStyle = slot.color;
+
+  // Shadow
+  if (slot.textShadow && slot.textShadow.blur > 0) {
+    ctx.shadowBlur = ratioToPixel(slot.textShadow.blur, baseHeight, scale);
+    ctx.shadowColor = slot.textShadow.color;
+  }
+
+  // Border (stroke)
+  if (hasBorder) {
+    ctx.strokeStyle = slot.border.color;
+    ctx.lineWidth = ratioToPixel(slot.border.width, baseHeight, scale);
+  }
+
   for (const ch of characters) {
     ctx.save();
 
@@ -178,22 +194,6 @@ export function drawVerticalText(ctx, slot, baseWidth, baseHeight, canvasWidth, 
     // Apply offset (for 。、，． etc.)
     if (ch.offsetX !== 0 || ch.offsetY !== 0) {
       ctx.translate(ch.offsetX, ch.offsetY);
-    }
-
-    // Set font and color
-    ctx.font = formatFont(slot.fontWeight, fontSizePx, slot.fontFamily);
-    ctx.fillStyle = slot.color;
-
-    // Shadow
-    if (slot.textShadow && slot.textShadow.blur > 0) {
-      ctx.shadowBlur = ratioToPixel(slot.textShadow.blur, baseHeight, scale);
-      ctx.shadowColor = slot.textShadow.color;
-    }
-
-    // Border (stroke)
-    if (hasBorder) {
-      ctx.strokeStyle = slot.border.color;
-      ctx.lineWidth = ratioToPixel(slot.border.width, baseHeight, scale);
     }
 
     if (ch.isTateChuYoko && ch.tcyChars && ch.tcyChars.length > 1) {

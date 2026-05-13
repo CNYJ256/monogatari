@@ -1,0 +1,35 @@
+export default {
+  id: 'poetry-vertical',
+  name: '诗歌竖排',
+  nameJa: '縦書き詩歌',
+  nameEn: 'Poetry Vertical',
+  thumbnail: '',
+  category: 'poetry',
+  lockedFields: ['backgroundColor'],
+  baseConfig: {
+    backgroundColor: '#000000',
+    texture: {
+      scanline: { enabled: true, density: 3, opacity: 0.08, color: '#ffffff' },
+      grain: { enabled: false, intensity: 0, type: 'luminance' },
+    },
+    textSlots: [
+      {
+        id: 'vertical-main',
+        position: { x: 0.85, y: 0.1 },
+        fontSize: 0.08,
+        color: '#ffffff',
+        direction: 'vertical',
+        fontFamily: 'MS PMincho, serif',
+        fontWeight: 400,
+        letterSpacing: 0,
+        lineHeight: 1.8,
+        stagger: 0.02,
+        zIndex: 0,
+        enabled: true,
+        label: '竖排文字',
+        placeholder: '在此输入竖排文字…',
+      },
+    ],
+    footerBlock: { enabled: false },
+  },
+};

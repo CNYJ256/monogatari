@@ -137,28 +137,6 @@ function buildItems(graphemes, fontSizePx) {
       continue;
     }
 
-    // Check for 2-3 consecutive single Latin/digit graphemes (tate-chu-yoko)
-    if (isNonCJK(graphemes[i])) {
-      let end = i + 1;
-      while (end < graphemes.length && isNonCJK(graphemes[end]) && end - i < 3) {
-        end++;
-      }
-      const count = end - i;
-      if (count >= 2) {
-        items.push({
-          type: 'tcy',
-          grapheme: graphemes.slice(i, end).join(''),
-          tcyChars: graphemes.slice(i, end),
-          rotation: 0,
-          offsetX: 0,
-          offsetY: 0,
-        });
-        i = end;
-        continue;
-      }
-      // Single non-CJK: fall through to regular char
-    }
-
     const pt = punctuationTransform(g, fontSizePx);
     items.push({
       type: 'char',
@@ -240,10 +218,8 @@ function itemToCharacter(item, x, y, column) {
  * @param {number} startY
  * @param {number} charHeight
  * @param {number} columnWidth
- * @param {number} canvasHeight
- * @param {number} margin
  */
-function recalcPositions(characters, startX, startY, charHeight, columnWidth, canvasHeight, margin) {
+function recalcPositions(characters, startX, startY, charHeight, columnWidth) {
   // Group by column
   const byCol = new Map();
   for (const ch of characters) {
@@ -283,11 +259,9 @@ function recalcPositions(characters, startX, startY, charHeight, columnWidth, ca
  * @param {number} startY
  * @param {number} charHeight
  * @param {number} columnWidth
- * @param {number} canvasHeight
- * @param {number} margin
  * @returns {number} Total columns after kinsoku
  */
-function applyKinsoku(characters, startX, startY, charHeight, columnWidth, canvasHeight, margin) {
+function applyKinsoku(characters, startX, startY, charHeight, columnWidth) {
   const maxPasses = 2;
   let passes = 0;
   let changed = true;
@@ -348,7 +322,7 @@ function applyKinsoku(characters, startX, startY, charHeight, columnWidth, canva
   }
 
   // Recalculate positions after all column reassignments
-  recalcPositions(characters, startX, startY, charHeight, columnWidth, canvasHeight, margin);
+  recalcPositions(characters, startX, startY, charHeight, columnWidth);
 
   // Compute new total columns
   const maxCol = characters.reduce((max, ch) => Math.max(max, ch.column), 0);
@@ -392,7 +366,7 @@ export function computeVerticalLayout(
   const scale = getGlobalScale(canvasWidth, baseWidth);
   const pixelPos = positionToPixel(slot.position, baseWidth, baseHeight, canvasWidth);
   const fontSizePx = ratioToPixel(slot.fontSize, baseHeight, scale);
-  const lineHeight = slot.lineHeight ?? 1.5;
+  const lineHeight = Math.max(slot.lineHeight ?? 1.5, 0.5);
   const columnWidth = fontSizePx * lineHeight;
   const charHeight = fontSizePx * lineHeight;
   const margin = fontSizePx;
@@ -434,7 +408,6 @@ export function computeVerticalLayout(
 
   if (totalColumns > maxColumns) {
     characters = characters.filter((ch) => ch.column < maxColumns);
-    totalColumns = maxColumns;
   }
 
   // --- Step 7: Kinsoku processing ---
@@ -444,8 +417,6 @@ export function computeVerticalLayout(
     startY,
     charHeight,
     columnWidth,
-    canvasHeight,
-    margin,
   );
 
   // Re-apply horizontal overflow after kinsoku (column reassignment may push

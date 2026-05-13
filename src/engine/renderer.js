@@ -35,6 +35,12 @@ export function render(config, canvas, dirtyFlags, internalState, cache) {
   const cssHeight = canvas.clientHeight || canvas.height / dpr;
   canvas.width = cssWidth * dpr;
   canvas.height = cssHeight * dpr;
+
+  if (canvas.width < 1 || canvas.height < 1) {
+    console.warn('render: canvas has zero dimensions — skipping render');
+    return;
+  }
+
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
 

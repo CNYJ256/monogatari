@@ -1,0 +1,36 @@
+export default {
+  id: 'single-char-black',
+  name: '单字黑底',
+  nameJa: '単文字黒背景',
+  nameEn: 'Single Character - Black',
+  thumbnail: '',
+  category: 'single',
+  lockedFields: ['backgroundColor'],
+  baseConfig: {
+    backgroundColor: '#000000',
+    texture: {
+      scanline: { enabled: true, density: 2, opacity: 0.12, color: '#ffffff' },
+      grain: { enabled: false, intensity: 0, type: 'luminance' },
+    },
+    textSlots: [
+      {
+        id: 'main',
+        position: { x: 0.5, y: 0.5 },
+        fontSize: 0.35,
+        color: '#ffffff',
+        direction: 'horizontal',
+        fontFamily: 'MS PMincho, serif',
+        fontWeight: 400,
+        letterSpacing: 0.05,
+        lineHeight: 1.5,
+        textAlign: 'center',
+        zIndex: 0,
+        enabled: true,
+        textShadow: { blur: 12, color: 'rgba(255,255,255,0.3)' },
+        label: '主文字',
+        placeholder: '在此输入文字…',
+      },
+    ],
+    footerBlock: { enabled: false },
+  },
+};

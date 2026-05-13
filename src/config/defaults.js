@@ -12,7 +12,7 @@ export const DEFAULT_FRAME_CONFIG = {
     enabled: false,
     content: '',
     position: { x: 0.5, y: 0.95 },
-    fontSize: 60,
+    fontSize: 0.015,
     color: '#ffffff',
     fontFamily: 'sans-serif',
     fontWeight: 400,

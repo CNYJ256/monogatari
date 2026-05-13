@@ -1,4 +1,4 @@
-const SAFE_PATH_RE = /^\/?[\w\-./]+\.(ttf|otf|woff2)$/;
+const SAFE_PATH_RE = /^(?!.*\.\.)\/?[\w\-./]+\.(ttf|otf|woff2)$/;
 
 export async function loadFont(fontPath) {
   if (!SAFE_PATH_RE.test(fontPath)) {

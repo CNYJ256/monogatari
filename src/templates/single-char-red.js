@@ -1,0 +1,35 @@
+export default {
+  id: 'single-char-red',
+  name: '单字红底',
+  nameJa: '単文字赤背景',
+  nameEn: 'Single Character - Red',
+  thumbnail: '',
+  category: 'single',
+  lockedFields: ['backgroundColor'],
+  baseConfig: {
+    backgroundColor: '#e60000',
+    texture: {
+      scanline: { enabled: true, density: 2, opacity: 0.15, color: '#000000' },
+      grain: { enabled: true, intensity: 0.12, type: 'luminance' },
+    },
+    textSlots: [
+      {
+        id: 'main',
+        position: { x: 0.5, y: 0.5 },
+        fontSize: 0.35,
+        color: '#ffffff',
+        direction: 'horizontal',
+        fontFamily: 'MS PMincho, serif',
+        fontWeight: 700,
+        letterSpacing: 0.08,
+        lineHeight: 1.5,
+        textAlign: 'center',
+        zIndex: 0,
+        enabled: true,
+        label: '主文字',
+        placeholder: '在此输入文字…',
+      },
+    ],
+    footerBlock: { enabled: false },
+  },
+};
