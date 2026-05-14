@@ -5,6 +5,18 @@ import SliderInput from '../common/SliderInput.jsx';
 import ColorPicker from '../common/ColorPicker.jsx';
 import ToggleSwitch from '../common/ToggleSwitch.jsx';
 
+const FONT_OPTIONS = [
+  { value: 'MS PMincho, serif', label: 'MS PMincho' },
+  { value: 'DFS Song, serif', label: 'DFS Song' },
+  { value: 'HG Mincho B, serif', label: 'HG Mincho B' },
+  { value: 'sans-serif', label: 'Sans-serif' },
+];
+
+const WEIGHT_OPTIONS = [
+  { value: 400, label: 'Regular (400)' },
+  { value: 700, label: 'Bold (700)' },
+];
+
 export default function FooterBlockEditor() {
   // Subscribe to lang for i18n reactivity
   useFrameStore((s) => s.lang);
@@ -105,6 +117,36 @@ export default function FooterBlockEditor() {
                   value={footerBlock.color}
                   onChange={(v) => handleSetConfig('footerBlock.color', v)}
                 />
+              </label>
+
+              <label className="fbe-field">
+                <span className="fbe-field__label">{t('footer.fontFamily')}</span>
+                <select
+                  className="fbe-select"
+                  value={footerBlock.fontFamily}
+                  onChange={(e) => handleSetConfig('footerBlock.fontFamily', e.target.value)}
+                >
+                  {FONT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="fbe-field">
+                <span className="fbe-field__label">{t('footer.fontWeight')}</span>
+                <select
+                  className="fbe-select"
+                  value={footerBlock.fontWeight}
+                  onChange={(e) => handleSetConfig('footerBlock.fontWeight', Number(e.target.value))}
+                >
+                  {WEIGHT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
               </label>
             </>
           )}

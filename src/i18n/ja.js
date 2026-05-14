@@ -69,6 +69,8 @@ export default {
   'footer.positionX': '横位置',
   'footer.positionY': '縦位置',
   'footer.color': '色',
+  'footer.fontFamily': 'フォント',
+  'footer.fontWeight': 'フォントの太さ',
   'footer.enabled': '話数バーを有効化',
 
   // Common

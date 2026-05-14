@@ -7,6 +7,8 @@ import ToggleSwitch from '../common/ToggleSwitch.jsx';
 
 const FONT_OPTIONS = [
   { value: 'MS PMincho, serif', labelKey: 'MS PMincho' },
+  { value: 'DFS Song, serif', labelKey: 'DFS Song' },
+  { value: 'HG Mincho B, serif', labelKey: 'HG Mincho B' },
   { value: 'SimSun, serif', labelKey: 'SimSun' },
   { value: 'sans-serif', labelKey: 'Sans-serif' },
 ];

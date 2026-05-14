@@ -69,6 +69,8 @@ export default {
   'footer.positionX': 'Position X',
   'footer.positionY': 'Position Y',
   'footer.color': 'Color',
+  'footer.fontFamily': 'Font',
+  'footer.fontWeight': 'Font Weight',
   'footer.enabled': 'Enable Footer',
 
   // Common

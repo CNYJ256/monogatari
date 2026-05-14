@@ -14,7 +14,7 @@ export const DEFAULT_FRAME_CONFIG = {
     position: { x: 0.5, y: 0.95 },
     fontSize: 0.015,
     color: '#ffffff',
-    fontFamily: 'sans-serif',
+    fontFamily: 'MS PMincho, serif',
     fontWeight: 400,
     zIndex: 10,
   },

@@ -69,6 +69,8 @@ export default {
   'footer.positionX': '水平位置',
   'footer.positionY': '垂直位置',
   'footer.color': '颜色',
+  'footer.fontFamily': '字体',
+  'footer.fontWeight': '字重',
   'footer.enabled': '启用番号栏',
 
   // Common
