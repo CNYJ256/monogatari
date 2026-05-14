@@ -49,9 +49,15 @@ export function updateCache(cache, config, internalState) {
 /**
  * Draw the cached background+texture composite onto a target canvas.
  *
+ * The cache is always at design resolution. The target canvas may be smaller
+ * (preview) or identical (export), so we scale the cache to fit the target
+ * CSS dimensions. This ensures textures look identical between preview and export.
+ *
  * @param {CanvasRenderingContext2D} ctx - Target canvas context
  * @param {{ canvas: HTMLCanvasElement }} cache - Cache object whose canvas will be drawn
+ * @param {number} cssWidth - Target CSS pixel width
+ * @param {number} cssHeight - Target CSS pixel height
  */
-export function drawCache(ctx, cache) {
-  ctx.drawImage(cache.canvas, 0, 0);
+export function drawCache(ctx, cache, cssWidth, cssHeight) {
+  ctx.drawImage(cache.canvas, 0, 0, cssWidth, cssHeight);
 }

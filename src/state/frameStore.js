@@ -4,6 +4,7 @@ import { getTemplate } from '../templates/index.js';
 import { getLang, setLang as setI18nLang } from '../i18n/index.js';
 
 const STORAGE_PREFIX = 'monogatari:template:';
+const LAST_TEMPLATE_KEY = 'monogatari:lastTemplateId';
 
 // ---------------------------------------------------------------------------
 // localStorage helpers — errors are caught silently
@@ -35,6 +36,22 @@ function removePersisted(templateId) {
     localStorage.removeItem(`${STORAGE_PREFIX}${templateId}:config`);
   } catch {
     /* ignore */
+  }
+}
+
+function saveLastTemplateId(templateId) {
+  try {
+    localStorage.setItem(LAST_TEMPLATE_KEY, templateId);
+  } catch {
+    /* ignore */
+  }
+}
+
+function readLastTemplateId() {
+  try {
+    return localStorage.getItem(LAST_TEMPLATE_KEY);
+  } catch {
+    return null;
   }
 }
 
@@ -255,6 +272,8 @@ export const useFrameStore = create((set, get) => ({
     // Preserve runtime assets (font load state, canvas support) across template switches
     mergedConfig.assets = get().config.assets;
 
+    saveLastTemplateId(templateId);
+
     set({
       config: mergedConfig,
       currentTemplateId: templateId,
@@ -350,3 +369,9 @@ export const useFrameStore = create((set, get) => ({
 
   setCanvasRef: (ref) => set({ canvasRef: ref }),
 }));
+
+// Auto-restore the last-used template on app start
+const lastId = readLastTemplateId();
+if (lastId) {
+  useFrameStore.getState().loadTemplate(lastId);
+}

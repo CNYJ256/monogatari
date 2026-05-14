@@ -47,30 +47,31 @@ export function render(config, canvas, dirtyFlags, internalState, cache, dprOver
   // --- Clear canvas ---
   ctx.clearRect(0, 0, cssWidth, cssHeight);
 
+  // --- Compute derived layout values ---
+  const baseHeight = config.baseWidth / (config.aspectRatio[0] / config.aspectRatio[1]);
+
   // --- Lazy-init internal state ---
   if (!internalState.noisePattern) {
     internalState.noisePattern = generateNoisePattern();
   }
 
   // --- Lazy-init cache ---
+  // Cache is always at design resolution so textures match export 1:1.
+  // drawCache scales it down to CSS dimensions for preview.
   if (!cache) {
-    cache = createCacheCanvas(cssWidth, cssHeight);
+    cache = createCacheCanvas(config.baseWidth, baseHeight);
   }
-
-  // --- Compute derived layout values ---
-  const baseHeight = config.baseWidth / (config.aspectRatio[0] / config.aspectRatio[1]);
 
   // --- Background + texture layer (cached) ---
   if (dirtyFlags.backgroundOrTexture) {
-    // Cache canvas dimensions must match display CSS size.
-    // updateCache uses cache.canvas.width/height, so resize if needed.
-    if (cache.canvas.width !== cssWidth || cache.canvas.height !== cssHeight) {
-      cache.canvas.width = cssWidth;
-      cache.canvas.height = cssHeight;
+    // Recreate cache if design resolution changed (e.g., baseWidth or aspect ratio).
+    if (cache.canvas.width !== config.baseWidth || cache.canvas.height !== baseHeight) {
+      cache.canvas.width = config.baseWidth;
+      cache.canvas.height = baseHeight;
     }
     updateCache(cache, config, internalState);
   }
-  drawCache(ctx, cache);
+  drawCache(ctx, cache, cssWidth, cssHeight);
 
   // --- Text layer ---
   drawTextSlots(
