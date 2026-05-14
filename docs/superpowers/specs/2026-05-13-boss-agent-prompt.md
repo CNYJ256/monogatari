@@ -50,7 +50,17 @@ npm run dev
 ```
 
 > **重要**: 本地测试使用**你自己的浏览器**而非 Playwright headless。Playwright 的 headless Chromium 下 Canvas 文字渲染不可靠（`fillText` 在 DPR 缩放后不可见），所以视觉验证必须在真实浏览器中进行。
-
+> **重要**：你没有视觉能力，如需视觉调用http://127.0.0.1:1234的qwen/qwen3.5-9b模型
+例子：
+```bash
+curl http://localhost:1234/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen/qwen3.5-9b",
+    "system_prompt": "You answer only in rhymes.",
+    "input": "What is your favorite color?"
+}'
+```
 ### 测试流程
 
 对每个功能点：操作 → 观察 → 检查 DevTools Console → 记录结果。
@@ -141,23 +151,9 @@ npm run dev
 
 ### 测试中发现的问题
 
-| # | 问题 | 状态 | 说明 |
-|---|------|------|------|
-| 1 | **字体路径 base path** | ✅ 已修复 | `/fonts/` → `${import.meta.env.BASE_URL}fonts/` |
-| 2 | **loadTemplate 重置 assets** | ✅ 已修复 | 三层合并 + `mergedConfig.assets = get().config.assets` |
-| 3 | **ToggleSwitch HTML 嵌套** | ✅ 已修复 | 新增 `roleOnly` prop |
-| 4 | **番号栏消失** | ✅ 已确认正常 | 切模板时 footerBlock 跟随模板默认值（通常 disabled），之前的编辑存储在 localStorage 中随模板 key 隔离 |
-| 5 | **Canvas 从不重渲染** | ✅ 已修复 | Zustand v5 subscribe API 不兼容：v5 仅接受 `subscribe(listener)` 单参数，v4 的 `subscribe(selector, listener, { equalityFn })` 写法导致 selector 被误当作 listener，真正的回调被忽略 |
-
-### `document.fonts.check()` 不可靠
-
-`document.fonts.check('16px "MS PMincho"')` 在某些浏览器（包括 Playwright Chromium）中即使字体未加载也返回 `true`。这导致：
-- `useFontStatus` 提前设置 `fontsLoaded = true`
-- 文字层尝试用未加载的字体渲染，可能使用系统回退字体
-- 视觉上文字显示为浏览器默认衬线体而非 MS PMincho
-
-**对策**: 字体加载应从"Fire-and-forget + poll check"改为 Promise-based 确认。`loadFont` 返回的 Promise 才是真正的加载完成信号——应直接用它来设置 `fontsLoaded`，而非依赖 `checkFontReady`。
-
+p0：字体切换无效，仍然是黑体
+p0：canvas大小小于左侧绘图区
+p0：浏览器缩小使canvas一直缩小
 ---
 
 ## 三、核心规则

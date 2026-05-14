@@ -10,12 +10,14 @@ import { computeVerticalLayout } from '../layout/verticalText.js';
  * @param {string} fontFamily
  * @returns {string} e.g. "400 80px sans-serif" or '400 80px "MS PMincho"'
  */
-function formatFont(fontWeight, fontSizePx, fontFamily) {
-  const family = fontFamily.trim();
-  const needsQuoting =
-    /\s/.test(family) && !family.startsWith('"') && !family.startsWith("'");
-  const quoted = needsQuoting ? `"${family}"` : family;
-  return `${fontWeight} ${fontSizePx}px ${quoted}`;
+export function formatFont(fontWeight, fontSizePx, fontFamily) {
+  const families = fontFamily.split(',').map((f) => {
+    const family = f.trim();
+    const needsQuoting =
+      /\s/.test(family) && !family.startsWith('"') && !family.startsWith("'");
+    return needsQuoting ? `"${family}"` : family;
+  });
+  return `${fontWeight} ${fontSizePx}px ${families.join(', ')}`;
 }
 
 /**

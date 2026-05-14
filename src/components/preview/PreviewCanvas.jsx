@@ -6,6 +6,7 @@ import useCapabilities from '../../hooks/useCapabilities.js';
 import { useFrameStore } from '../../state/frameStore.js';
 import { t } from '../../i18n/index.js';
 import { positionToPixel, ratioToPixel, pixelToRatio, getGlobalScale } from '../../utils/coordinates.js';
+import { formatFont } from '../../engine/layers/text.js';
 import { computeVerticalLayout } from '../../engine/layout/verticalText.js';
 
 // ---------------------------------------------------------------------------
@@ -26,11 +27,7 @@ function hitHorizontalSlot(cssX, cssY, slot, baseWidth, baseHeight, canvasCssWid
   const fontSizePx = ratioToPixel(slot.fontSize, baseHeight, scale);
   const pixelPos = positionToPixel(slot.position, baseWidth, baseHeight, canvasCssWidth);
 
-  // Set font to match what the renderer uses
-  const family = slot.fontFamily.trim();
-  const needsQuoting = /\s/.test(family) && !family.startsWith('"') && !family.startsWith("'");
-  const quotedFamily = needsQuoting ? `"${family}"` : family;
-  ctx.font = `${slot.fontWeight} ${fontSizePx}px ${quotedFamily}`;
+  ctx.font = formatFont(slot.fontWeight, fontSizePx, slot.fontFamily);
 
   const metrics = ctx.measureText(slot.content);
   const measuredWidth = metrics.width;

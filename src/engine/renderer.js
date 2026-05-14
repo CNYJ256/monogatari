@@ -1,6 +1,6 @@
 import { updateCache, drawCache, createCacheCanvas } from './cache.js';
 import { generateNoisePattern } from './layers/grain.js';
-import { drawTextSlots } from './layers/text.js';
+import { formatFont, drawTextSlots } from './layers/text.js';
 import { positionToPixel, ratioToPixel, getGlobalScale } from '../utils/coordinates.js';
 
 // Re-exports for convenient single-entry imports
@@ -105,20 +105,13 @@ export function drawFooterBlock(ctx, footerBlock, baseWidth, baseHeight, canvasW
   const scale = getGlobalScale(canvasWidth, baseWidth);
   const pixelPos = positionToPixel(footerBlock.position, baseWidth, baseHeight, canvasWidth);
 
-  // fontSize < 1 treated as ratio, >= 1 treated as direct pixel value
   const fontSizePx =
     footerBlock.fontSize < 1
       ? ratioToPixel(footerBlock.fontSize, baseHeight, scale)
       : footerBlock.fontSize * scale;
 
-  // Quote font family if it contains whitespace
-  const family = footerBlock.fontFamily.trim();
-  const needsQuoting =
-    /\s/.test(family) && !family.startsWith('"') && !family.startsWith("'");
-  const quotedFamily = needsQuoting ? `"${family}"` : family;
-
   ctx.save();
-  ctx.font = `${footerBlock.fontWeight} ${fontSizePx}px ${quotedFamily}`;
+  ctx.font = formatFont(footerBlock.fontWeight, fontSizePx, footerBlock.fontFamily);
   ctx.fillStyle = footerBlock.color;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'bottom';
